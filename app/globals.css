@@ -19,6 +19,74 @@
   }
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-2xl font-bold;
+  }
+  
+  h2 {
+    @apply text-xl font-semibold text-blue-600;
+  }
+  
+  h3 {
+    @apply text-lg font-semibold;
+  }
+}
+
+@layer components {
+  /* Layout */
+  .page-container {
+    @apply container mx-auto p-4;
+  }
+  
+  /* Cards */
+  .card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden;
+  }
+  
+  .card-body {
+    @apply p-4;
+  }
+  
+  /* Forms */
+  .form-group {
+    @apply mb-4;
+  }
+  
+  .form-label {
+    @apply block text-gray-700 font-medium mb-2;
+  }
+  
+  .form-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+  
+ /* Buttons */
+ .btn {
+    @apply px-4 py-2 rounded-md transition-colors;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 rounded-md transition-colors bg-blue-500 text-white hover:bg-blue-600;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-md transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300;
+  }
+
+  .btn-success {
+    @apply px-4 py-2 rounded-md transition-colors bg-green-500 text-white hover:bg-green-600;
+  }
+
+  .btn-block {
+    @apply w-full;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
