@@ -58,14 +58,19 @@
   }
   
   .form-label {
-    @apply block text-gray-700 font-medium mb-2;
+    @apply block text-gray-800 font-medium mb-2;
   }
   
   .form-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+    
+  /* Placeholder text */
+  input::placeholder {
+    @apply text-gray-400;
   }
   
- /* Buttons */
+  /* Buttons */
  .btn {
     @apply px-4 py-2 rounded-md transition-colors;
   }
