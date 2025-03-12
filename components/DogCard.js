@@ -25,7 +25,7 @@ const DogCard = ({ dog, isFavorite = false, onToggleFavorite }) => {
       </div>
       <div className="p-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">{dogData.name}</h3>
+          <h3 className="card-name ">{dogData.name}</h3>
           <button 
             onClick={() => onToggleFavorite && onToggleFavorite(dogData.id)}
             className="text-red-500 focus:outline-none"

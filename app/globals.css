@@ -48,6 +48,9 @@
     @apply bg-white rounded-lg shadow-md overflow-hidden;
   }
   
+  .card-name {
+    @apply text-lg text-blue-600 font-semibold;
+  }
   .card-body {
     @apply p-4;
   }
@@ -63,12 +66,16 @@
   
   .form-input {
     @apply w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500;
-  }
     
-  /* Placeholder text */
-  input::placeholder {
-    @apply text-gray-400;
+    &::placeholder {
+      @apply text-gray-400;
+    }
   }
+  
+  .form-select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-md text-left;
+  }
+  
   
   /* Buttons */
  .btn {

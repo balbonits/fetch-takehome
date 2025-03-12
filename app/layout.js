@@ -1,4 +1,5 @@
 import Providers from '../components/Providers';
+import SiteNavigation from '../components/SiteNavigation';
 import './globals.css';
 
 export const metadata = {
@@ -17,6 +18,7 @@ const RootLayout = ({children}) => {
               <h1 className="text-2xl font-bold">Dog Adoption App</h1>
             </div>
           </header>
+          <SiteNavigation />
           <main className="min-h-screen bg-gray-200">
             {children}
           </main>
