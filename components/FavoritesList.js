@@ -1,9 +1,12 @@
-const FavoritesList = ({ favoritedDogIds, setFavoritedDogIds, favoriteDogs, onSubmitAdoption }) => {
-  const handleToggleFavorite = (dogId) => {
-    setFavoritedDogIds((prev) =>
-      prev.includes(dogId) ? prev.filter((id) => id !== dogId) : [...prev, dogId]
-    );
-  };
+// components/FavoritesList.js
+'use client';
+
+import { useDogs } from '../context/DogsContext';
+import DogCard from './DogCard';
+
+const FavoritesList = () => {
+  const { favorites, dogs } = useDogs();
+  const favoriteDogs = dogs.filter((dog) => favorites.includes(dog.id));
 
   return (
     <div>
@@ -18,26 +21,11 @@ const FavoritesList = ({ favoritedDogIds, setFavoritedDogIds, favoriteDogs, onSu
           </a>
         </div>
       ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {favoriteDogs.map((dog) => (
-              <DogCard
-                key={dog.id}
-                dog={dog}
-                isFavorite={favoritedDogIds.includes(dog.id)}
-                onToggleFavorite={handleToggleFavorite}
-              />
-            ))}
-          </div>
-          <div className="flex justify-center pt-4 border-t">
-            <button
-              onClick={onSubmitAdoption}
-              className="px-8 py-3 bg-green-500 text-white rounded-md hover:bg-green-600"
-            >
-              Submit Adoption Request
-            </button>
-          </div>
-        </>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {favoriteDogs.map((dog) => (
+            <DogCard key={dog.id} dog={dog} />
+          ))}
+        </div>
       )}
     </div>
   );

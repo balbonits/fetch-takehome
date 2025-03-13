@@ -1,37 +1,43 @@
 // context/DogsContext.js
 'use client';
 
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useCallback } from 'react';
 
 const DogsContext = createContext(null);
 
 export const DogsProvider = ({ children }) => {
   const [breeds, setBreeds] = useState([]);
   const [dogs, setDogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(false); // Start false, only true during fetch
   const [error, setError] = useState('');
 
-  const fetchBreeds = async () => {
+  const fetchBreeds = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch('https://frontend-take-home-service.fetch.com/dogs/breeds', {
         credentials: 'include',
       });
+      if (!response.ok) throw new Error('Failed to fetch breeds');
       const data = await response.json();
       setBreeds(data);
     } catch (error) {
-      console.error('Failed to fetch breeds:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []); // No dependencies, stable function
 
-  const fetchDogs = async (filters) => {
+  const fetchDogs = useCallback(async (filters = {}) => {
     setLoading(true);
     setError('');
     try {
-      const queryParams = new URLSearchParams(filters);
+      const queryParams = new URLSearchParams(filters).toString();
       const response = await fetch(
-        `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams.toString()}`,
+        `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams}`,
         { credentials: 'include' }
       );
+      if (!response.ok) throw new Error('Failed to search dogs');
       const { resultIds } = await response.json();
       const dogsResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs', {
         method: 'POST',
@@ -39,6 +45,7 @@ export const DogsProvider = ({ children }) => {
         body: JSON.stringify(resultIds),
         credentials: 'include',
       });
+      if (!dogsResponse.ok) throw new Error('Failed to fetch dog details');
       const dogsData = await dogsResponse.json();
       setDogs(dogsData);
     } catch (err) {
@@ -46,10 +53,16 @@ export const DogsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+  }, []); // No dependencies, stable function
+
+  const toggleFavorite = (dogId) => {
+    setFavorites((prev) =>
+      prev.includes(dogId) ? prev.filter((id) => id !== dogId) : [...prev, dogId]
+    );
   };
 
   return (
-    <DogsContext.Provider value={{ breeds, dogs, loading, error, fetchBreeds, fetchDogs }}>
+    <DogsContext.Provider value={{ breeds, dogs, favorites, loading, error, fetchBreeds, fetchDogs, toggleFavorite }}>
       {children}
     </DogsContext.Provider>
   );

@@ -1,44 +1,40 @@
+// components/SiteNavigation.js
 'use client';
 
-import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const SiteNavigation = () => {
   const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
-    <div className="bg-blue-500 text-white">
-      <div className="container mx-auto py-2 px-4 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          {user && (
+    <nav className="bg-blue-800 text-white p-4">
+      <div className="container mx-auto flex justify-between">
+        <div>
+          {user ? (
             <>
-              <Link href="/search" className="font-medium hover:text-blue-100">
-                Search
-              </Link>
-              <Link href="/favorites" className="font-medium hover:text-blue-100">
-                My Favorites
-              </Link>
+              <span className="mr-4">Welcome, {user.name}</span>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md"
+              >
+                Logout
+              </button>
             </>
+          ) : (
+            <a href="/login" className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md">
+              Login
+            </a>
           )}
         </div>
-        
-        {user ? (
-          <div className="flex items-center space-x-2">
-            <span>Welcome, {user.name}</span>
-            <button 
-              className="px-2 py-1 text-sm bg-blue-600 rounded hover:bg-blue-700"
-              onClick={logout}
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
-          <Link href="/login" className="font-medium hover:text-blue-100">
-            Login
-          </Link>
-        )}
       </div>
-    </div>
+    </nav>
   );
 };
 

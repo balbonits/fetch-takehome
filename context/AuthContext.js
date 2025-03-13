@@ -1,3 +1,4 @@
+// context/AuthContext.js
 'use client';
 
 import { createContext, useState, useContext, useEffect } from 'react';
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('Login failed');
       }
-      const userData = { name, email };
+      const userData = { name, email }; // Adjust based on actual API response
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
       return true;

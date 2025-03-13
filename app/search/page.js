@@ -11,6 +11,7 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [sortOrder, setSortOrder] = useState('asc');
   const [selectedBreeds, setSelectedBreeds] = useState([]);
   const [ageMin, setAgeMin] = useState('');
@@ -56,7 +57,7 @@ const SearchPage = () => {
     fetchBreeds();
   }, [isAuthenticated]);
 
-  // Fetch dogs
+  // Fetch dogs based on filters, page, and sort order
   useEffect(() => {
     if (!isAuthenticated) return;
     const fetchDogs = async () => {
@@ -79,7 +80,8 @@ const SearchPage = () => {
           { credentials: 'include' }
         );
         if (!response.ok) throw new Error('Failed to fetch search results');
-        const { resultIds } = await response.json();
+        const { resultIds, total } = await response.json();
+        setTotalPages(Math.ceil(total / 10));
 
         const dogsResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs', {
           method: 'POST',
@@ -107,15 +109,15 @@ const SearchPage = () => {
 
   const handleSearch = (newFilters) => {
     setFilters(newFilters);
+    setPage(0); // Reset to first page on new search
   };
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
     setShowLoginModal(false);
-    localStorage.setItem('isAuthenticated', 'true'); // Persist authentication status
+    localStorage.setItem('isAuthenticated', 'true');
   };
 
-  // Render logic
   return (
     <>
       {showLoginModal && (
@@ -173,7 +175,8 @@ const SearchPage = () => {
                 </button>
                 <button
                   onClick={() => setPage((prev) => prev + 1)}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded"
+                  disabled={page >= totalPages - 1}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
                 >
                   Next
                 </button>
