@@ -1,12 +1,27 @@
 // components/FavoritesList.js
 'use client';
 
+import { useEffect } from 'react';
 import { useDogs } from '../context/DogsContext';
 import DogCard from './DogCard';
 
 const FavoritesList = () => {
-  const { favorites, dogs } = useDogs();
-  const favoriteDogs = dogs.filter((dog) => favorites.includes(dog.id));
+  const { favorites, dogs, fetchDogs } = useDogs();
+
+  // Fetch favorited dogs on mount if favorites exist
+  useEffect(() => {
+    if (favorites.length > 0 && (!dogs || dogs.length === 0)) {
+      fetchDogs({ ids: favorites }); // Assuming API can filter by IDs
+    }
+  }, [favorites, dogs, fetchDogs]);
+
+  // Guard against dogs being undefined
+  console.log('favorites ::', favorites);
+  console.log('dogs ::', dogs);
+  const favoriteDogs = dogs && Array.isArray(dogs)
+    ? dogs.filter((dog) => favorites.includes(dog.id))
+    : [];
+  console.log('favoriteDogs ::', favoriteDogs);
 
   return (
     <div>

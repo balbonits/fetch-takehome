@@ -1,7 +1,7 @@
 // context/DogsContext.js
 'use client';
 
-import { createContext, useState, useContext, useCallback } from 'react';
+import { createContext, useState, useContext } from 'react';
 
 const DogsContext = createContext(null);
 
@@ -9,36 +9,44 @@ export const DogsProvider = ({ children }) => {
   const [breeds, setBreeds] = useState([]);
   const [dogs, setDogs] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(false); // Start false, only true during fetch
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const fetchBreeds = useCallback(async () => {
+  const fetchBreeds = async () => {
     setLoading(true);
     try {
       const response = await fetch('https://frontend-take-home-service.fetch.com/dogs/breeds', {
         credentials: 'include',
       });
-      if (!response.ok) throw new Error('Failed to fetch breeds');
       const data = await response.json();
       setBreeds(data);
     } catch (error) {
-      setError(error.message);
+      console.error('Failed to fetch breeds:', error);
     } finally {
       setLoading(false);
     }
-  }, []); // No dependencies, stable function
+  };
 
-  const fetchDogs = useCallback(async (filters = {}) => {
+  const fetchDogs = async (options = {}) => {
     setLoading(true);
     setError('');
     try {
-      const queryParams = new URLSearchParams(filters).toString();
-      const response = await fetch(
-        `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams}`,
-        { credentials: 'include' }
-      );
-      if (!response.ok) throw new Error('Failed to search dogs');
-      const { resultIds } = await response.json();
+      let resultIds;
+      if (options.ids) {
+        // Fetch specific dogs by IDs (e.g., favorites)
+        resultIds = options.ids;
+      } else {
+        // Regular search with filters
+        const queryParams = new URLSearchParams(options).toString();
+        const response = await fetch(
+          `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams}`,
+          { credentials: 'include' }
+        );
+        if (!response.ok) throw new Error('Failed to fetch search results');
+        const data = await response.json();
+        resultIds = data.resultIds;
+      }
+
       const dogsResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -53,7 +61,7 @@ export const DogsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []); // No dependencies, stable function
+  };
 
   const toggleFavorite = (dogId) => {
     setFavorites((prev) =>
